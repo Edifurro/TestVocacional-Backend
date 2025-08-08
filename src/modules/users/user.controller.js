@@ -9,9 +9,11 @@ exports.register = async (req, res) => {
     return res.status(400).json({ message: 'La CURP debe tener 18 caracteres.' });
   }
   try {
+    debugger
     const result = await userService.register(curp, email, password, nombre, apellidos);
     res.status(201).json(result);
   } catch (err) {
+    debugger
     res.status(err.status || 500).json({ message: err.message });
   }
 };

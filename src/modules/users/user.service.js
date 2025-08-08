@@ -1,6 +1,7 @@
-const User = require('./user.model');
+const User = require('../../models/usuarios');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sequelize = require('../../config/db');
 // Regex oficial para CURP mexicana
 const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]{2}$/i;
 
@@ -10,18 +11,25 @@ exports.register = async (curp, email, password, nombre, apellidos) => {
     throw { status: 400, message: 'La CURP no tiene un formato válido.' };
   }
   // Verificar que la curp y el email no existan
-  const existsCurp = await User.findOne({ where: { curp } });
+  const existsCurp = await sequelize.models.usuarios.findOne({ where: { curp } });
+
+  
+
   if (existsCurp) {
     throw { status: 409, message: 'La CURP ya está registrada.' };
   }
-  const existsEmail = await User.findOne({ where: { email } });
+  const existsEmail = await sequelize.models.usuarios.findOne({ where: { email } });
+
+  debugger
+
   if (existsEmail) {
     throw { status: 409, message: 'El email ya está registrado.' };
   }
   // Encriptar la contraseña
   const hashedPassword = await bcrypt.hash(password, 10);
   // Crear usuario aspirante
-  const user = await User.create({
+
+  const user = await sequelize.models.usuarios.create({
     curp,
     email,
     password: hashedPassword,
@@ -42,7 +50,7 @@ exports.register = async (curp, email, password, nombre, apellidos) => {
 };
 
 exports.login = async (curp, password) => {
-  const user = await User.findOne({ where: { curp } });
+  const user = await sequelize.models.usuarios.findOne({ where: { curp } });
   if (!user) {
     throw { status: 401, message: 'Usuario o contraseña incorrectos.' };
   }
