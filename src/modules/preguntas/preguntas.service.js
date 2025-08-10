@@ -24,15 +24,37 @@ function normalizePregunta(row) {
 	};
 }
 
-exports.list = async ({ tipo, role, full }) => {
+exports.list = async ({ tipo, role, materia, page, pageSize, raw }) => {
 	const where = {};
 	if (tipo !== undefined) {
 		if (!(tipo === 0 || tipo === 1)) throw { status: 400, message: 'tipo debe ser 0 o 1' };
 		where.tipo = Buffer.from([tipo]);
 	}
-	const rows = await Pregunta.findAll({ where });
-	// Para aspirante devolvemos lista normalizada siempre.
-	return rows.map(r => normalizePregunta(r));
+	if (materia !== undefined) {
+		where.id_materia = materia;
+	}
+
+	// Paginación opcional
+	const doPaging = Number.isInteger(page) && Number.isInteger(pageSize) && page > 0 && pageSize > 0;
+	if (doPaging) {
+		const { count, rows } = await Pregunta.findAndCountAll({
+			where,
+			limit: pageSize,
+			offset: (page - 1) * pageSize,
+			order: [['id_pregunta', 'ASC']]
+		});
+		const items = raw ? rows : rows.map(r => normalizePregunta(r));
+		return {
+			items,
+			page,
+			pageSize,
+			total: count,
+			totalPages: Math.ceil(count / pageSize)
+		};
+	}
+
+	const rows = await Pregunta.findAll({ where, order: [['id_pregunta', 'ASC']] });
+	return raw ? rows : rows.map(r => normalizePregunta(r));
 };
 
 exports.getById = async (id) => {

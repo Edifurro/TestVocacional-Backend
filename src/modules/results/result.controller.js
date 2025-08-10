@@ -17,8 +17,8 @@ exports.list = async (req, res) => {
 	try {
 		const requester = req.user;
 		if (!requester) return res.status(401).json({ message: 'No autenticado' });
-		const data = await service.list(requester.role, requester.curp, req.query.curp);
-		res.json({ results: data });
+	const data = await service.list(requester.role, requester.curp, req.query.curp, req.query.id_usuario ? Number(req.query.id_usuario) : undefined);
+	res.json(data);
 	} catch (err) {
 		res.status(err.status || 500).json({ message: err.message || 'Error al obtener resultados' });
 	}
