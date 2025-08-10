@@ -33,6 +33,7 @@ function bitToNumber(bitVal) {
 
 // Create result rows per answer for the current user (metaData = 1|0). Only one attempt allowed.
 exports.submit = async (userCurp, payload) => {
+	
 	const { answers } = payload || {};
 	if (!Array.isArray(answers) || answers.length === 0) {
 		throw { status: 400, message: 'answers debe ser un arreglo no vacío.' };
@@ -57,8 +58,67 @@ exports.submit = async (userCurp, payload) => {
 		id_pregunta: a.id_pregunta,
 		metaData: JSON.stringify(toYes(a.respuesta ?? a.answer ?? a.value) ? 1 : 0)
 	}));
+	
 	const created = await sequelize.models.resultados.bulkCreate(rows);
-	return { message: 'Respuestas guardadas', count: created.length };
+	
+	// LEEMOS LAS TABLAS BLOQUEADAS
+	await sequelize.query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
+
+	const results = await sequelize.query(`
+		SELECT 
+			m.nombre AS materia,
+			CAST(p.tipo AS SIGNED) AS tipo,
+			COUNT(*) AS total_respuestas_usuario,
+			(
+				SELECT COUNT(*)
+				FROM pregunta p2
+				WHERE p2.id_materia = m.id
+				AND p2.tipo = p.tipo
+			) AS total_preguntas_materia_tipo
+		FROM resultados r
+		JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+		JOIN materia m ON p.id_materia = m.id
+		WHERE r.id_usuario = ${usuario.id}
+		AND JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true'
+		GROUP BY m.nombre, p.tipo
+		ORDER BY m.nombre DESC, p.tipo;
+	`)
+	
+	const [ajusteResultados] = await sequelize.query(`
+		SELECT 
+			m.nombre AS materia,
+			COUNT(*) AS total_respuestas_usuario,
+			(
+				SELECT COUNT(*)
+				FROM pregunta p2
+				WHERE p2.id_materia = m.id
+				AND p2.tipo = p.tipo
+			) AS total_preguntas_materia_tipo,
+			ROUND(
+			COUNT(*) / 
+			(SELECT COUNT(*) 
+			FROM pregunta p3 
+			WHERE p3.id_materia = m.id 
+				AND p3.tipo = p.tipo
+			) * 100, 2
+			) AS porcentaje_ajuste
+		FROM resultados r
+		JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+		JOIN materia m ON p.id_materia = m.id
+		WHERE r.id_usuario = ${usuario.id}
+		AND JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true'
+		GROUP BY m.nombre, p.tipo
+		ORDER BY porcentaje_ajuste DESC
+		LIMIT 3;
+	`)
+
+	return { 
+		message: 'Respuestas guardadas', 
+		count: created.length,
+		resultados: results,
+		ajusteResultados
+	};
+
 };
 
 // List results and aggregated counts per materia for a given curp
