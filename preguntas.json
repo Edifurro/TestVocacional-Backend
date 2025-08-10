@@ -1,0 +1,144 @@
+{
+  "data": {
+    "economica": {
+      "interes": [
+        { "text": "¿Aceptarías trabajar escribiendo artículos en la sección económica de un periódico?" },
+        { "text": "¿Puedes establecer la diferencia conceptual entre macroeconomía y microeconomía?" },
+        { "text": "¿Si te convocara tu equipo preferido para planificar, organizar y dirigir un campo de deportes, aceptarías?" },
+        { "text": "¿Te gustaría realizar una investigación que contribuyera a hacer más justa la distribución de la riqueza?" },
+        { "text": "¿En un equipo de trabajo prefieres el rol de coordinador?" },
+        { "text": "¿Dirigirías el área de importación y exportación de una empresa?" },
+        { "text": "¿Te costearías tus estudios trabajando en una auditoría?" },
+        { "text": "¿Te resultaría gratificante ser asesor contable en una empresa reconocida?" },
+        { "text": "¿Sabes qué es el PRODUCTO INTERNO BRUTO?" }
+      ],
+      "aptitud": [
+        { "text": "¿Te ofrecerías para organizar la despedida de soltero(a) de uno de tus amigos?" },
+        { "text": "¿Organizas tu dinero de manera que te alcance para todos tus gastos?" },
+        { "text": "¿Distribuyes tu horario adecuadamente para poder hacer todo lo planeado?" },
+        { "text": "¿Te resulta fácil coordinar un grupo de trabajo?" },
+        { "text": "¿Si una gran empresa solicita un profesional como gerente comercial, te sentirías a gusto desempeñando ese rol?" }
+      ]
+    },
+    "humanistica": {
+      "interes": [
+        { "text": "¿Te gustaría trabajar con niños?" },
+        { "text": "¿Elegirías una carrera cuyo instrumento de trabajo fuera la utilización de un idioma extranjero?" },
+        { "text": "¿Dedicarías parte de tu tiempo para ayudar a personas de zonas vulnerables?" },
+        { "text": "¿Te ofrecerías para explicar a tus compañeros un determinado tema que ellos no entendieran?" },
+        { "text": "¿Pasarías varias horas leyendo un libro de tu interés?" },
+        { "text": "¿Te interesan los temas relacionados al pasado y a la evolución del hombre?" },
+        { "text": "¿Participarías en una investigación sobre la violencia en el fútbol (las barras bravas)?" },
+        { "text": "¿Descubriste algún filósofo o escritor que haya expresado tus mismas ideas antes?" },
+        { "text": "¿La libertad y la justicia son valores importantes en tu vida?" },
+        { "text": "¿Lucharías por una causa justa hasta las últimas consecuencias?" }
+      ],
+      "aptitud": [
+        { "text": "¿Consideras importante que desde la escuela primaria se fomente la actitud crítica y la participación activa?" },
+        { "text": "¿Preservar las raíces culturales de nuestro país te parece importante y necesario?" },
+        { "text": "¿En una discusión entre amigos te ofreces como mediador?" },
+        { "text": "¿Eres de los que defienden causas perdidas?" }
+      ]
+    },
+    "artistica": {
+      "interes": [
+        { "text": "¿Te gustaría dirigir un proyecto de urbanización en tu barrio?" },
+        { "text": "¿Te atrae armar rompecabezas?" },
+        { "text": "¿Eres el que pone un toque de alegría en las fiestas?" },
+        { "text": "¿Disfrutas trabajando con arcilla o plastilina?" },
+        { "text": "¿Fuera de los horarios escolares, dedicas algún día a la semana a practicar algún deporte o actividad física?" },
+        { "text": "¿Tolerarías empezar tantas veces como fuera necesario hasta obtener el logro deseado?" },
+        { "text": "¿Cuando estás en un grupo de trabajo, te agrada producir ideas originales y que sean tenidas en cuenta?" },
+        { "text": "¿Desearías que te regalaran algún instrumento musical para tu cumpleaños?" },
+        { "text": "¿Harías el afiche para una campaña de prevención del SIDA?" },
+        { "text": "¿Cuando eliges tu ropa o decoras un ambiente, tienes en cuenta la combinación de los colores, las telas o el estilo de los muebles?" }
+      ],
+      "aptitud": [
+        { "text": "¿Crees que los detalles son tan importantes como el todo?" },
+        { "text": "¿Te gusta más el trabajo manual que el trabajo intelectual?" },
+        { "text": "¿Harías un nuevo diseño de una prenda pasada de moda ante una reunión imprevista?" },
+        { "text": "¿Dirigirías un grupo de teatro independiente?" }
+      ]
+    },
+    "salud": {
+      "interes": [
+        { "text": "¿Ante un llamado solidario, te ofrecerías para cuidar a un enfermo?" },
+        { "text": "¿Escuchas atentamente los problemas que tienen tus amigos?" },
+        { "text": "¿Convences fácilmente a otras personas sobre la validez de tus argumentos?" },
+        { "text": "¿Te sentirías a gusto trabajando en un ambiente hospitalario?" },
+        { "text": "¿Participarías en una campaña de prevención contra el virus AH1N1?" },
+        { "text": "¿Te gustaría hacer un curso de primeros auxilios?" },
+        { "text": "¿Acostumbras a leer revistas relacionadas con los últimos avances científicos y tecnológicos en el área de salud?" },
+        { "text": "¿Te gustaría investigar sobre alguna nueva vacuna?" },
+        { "text": "¿Te resulta interesante el estudio de las ciencias naturales?" },
+        { "text": "¿Ante una emergencia epidémica, participarías en una campaña brindando tu ayuda?" }
+      ],
+      "aptitud": [
+        { "text": "¿Consideras que la salud pública debe ser prioritaria, gratuita y eficiente para todos?" },
+        { "text": "¿Estarías dispuesto a renunciar a un momento placentero para ofrecer tu servicio como profesional?" },
+        { "text": "¿Ayudas habitualmente a personas invidentes a cruzar la calle?" },
+        { "text": "¿A una posición negativa siempre planteas un pensamiento positivo?" }
+      ]
+    },
+    "ingenieria": {
+      "interes": [
+        { "text": "¿Te gustaría trabajar como profesional dirigiendo la construcción de una empresa hidroeléctrica?" },
+        { "text": "¿Cuando eras pequeño, te interesaba saber cómo estaban construidos tus juguetes?" },
+        { "text": "¿Cuando tienes que resolver un problema matemático, perseveras hasta encontrar la solución?" },
+        { "text": "¿Entablas una relación casi personal con tu computador?" },
+        { "text": "¿Te ofrecerías para colaborar como voluntario en la NASA?" },
+        { "text": "¿Harías un curso para aprender a fabricar los instrumentos y/o piezas de las máquinas o aparatos con que trabajas?" },
+        { "text": "¿Te incluirías en un proyecto nacional de desarrollo de la principal fuente de recursos de tu ciudad?" },
+        { "text": "¿Cuando se daña un electrodoméstico, rápidamente te ofreces para arreglarlo o repararlo?" },
+        { "text": "¿Te gustaría investigar científicamente sobre cultivos agrícolas?" },
+        { "text": "¿Enviarías tu hoja de vida a una empresa automotriz que solicita gente para su área de producción?" }
+      ],
+      "aptitud": [
+        { "text": "¿Planificas detalladamente tus trabajos antes de empezar?" },
+        { "text": "¿Crees que tus ideas son importantes y haces todo lo posible para ponerlas en práctica?" },
+        { "text": "¿Trabajar con objetos te resulta más gratificante que trabajar con personas?" },
+        { "text": "¿Eres exigente y crítico con tu equipo de trabajo?" }
+      ]
+    },
+    "defensa": {
+      "interes": [
+        { "text": "¿Participarías en un grupo de defensa internacional dentro de alguna fuerza armada?" },
+        { "text": "¿Te dedicarías a ayudar a personas accidentadas o atacadas por asaltantes?" },
+        { "text": "¿Participarías como profesional en un espectáculo de acrobacia aérea?" },
+        { "text": "¿Te gustaría participar para mantener el orden ante grandes desórdenes o catástrofes?" },
+        { "text": "¿Aceptarías que las mujeres formaran parte de las fuerzas armadas bajo las mismas condiciones que los hombres?" },
+        { "text": "¿Te interesan las actividades de mucha acción y de reacción rápida en situaciones imprevistas y de peligro?" },
+        { "text": "¿Elegirías una profesión en la que tuvieras que estar algunos meses alejado de tu familia?" },
+        { "text": "¿Aceptarías colaborar con el cumplimiento de las normas en lugares públicos?" },
+        { "text": "¿Te gustaría realizar tareas auxiliares en un avión o aeronave, como izar velas, pintura y conservación de casco, arreglos de averías, conservación de motores?" },
+        { "text": "¿Estás de acuerdo con la formación de un cuerpo de soldados profesionales?" }
+      ],
+      "aptitud": [
+        { "text": "¿Usar uniforme te hace sentir distinto, importante?" },
+        { "text": "¿Crees que el país debe poseer la más alta tecnología armamentista, a cualquier precio?" },
+        { "text": "¿Ante una situación de emergencia, actúas rápidamente?" },
+        { "text": "¿Arriesgarías tu vida para salvar la vida de otro que no conoces?" }
+      ]
+    },
+    "exactas": {
+      "interes": [
+        { "text": "¿Sabes responder qué significa ADN y ARN?" },
+        { "text": "¿Te atrae investigar sobre los misterios del universo, por ejemplo, los agujeros negros?" },
+        { "text": "¿Estás informado sobre nuevos descubrimientos que se están realizando sobre la Teoría del Big Bang?" },
+        { "text": "¿Te gustaría crear nuevas técnicas para descubrir las patologías de algunas enfermedades a través del microscopio?" },
+        { "text": "¿Te incluirías en un proyecto de investigación de los movimientos sísmicos y sus consecuencias?" },
+        { "text": "¿Te gustaría trabajar en un laboratorio mientras estudias?" },
+        { "text": "¿Te radicarías en una zona agrícola-ganadera para desarrollar tus actividades como profesional?" },
+        { "text": "¿Formarías parte de un equipo de trabajo orientado a la preservación de la flora y la fauna en extinción?" },
+        { "text": "¿Aceptarías hacer una práctica rentada en una industria de productos alimenticios, en el sector de control de calidad?" },
+        { "text": "¿Visitarías un observatorio astronómico para conocer en sección el funcionamiento de los aparatos?" }
+      ],
+      "aptitud": [
+        { "text": "¿El trabajo individual te resulta más rápido y efectivo que el trabajo grupal?" },
+        { "text": "¿Te interesan más los misterios de la naturaleza que los secretos de la tecnología?" },
+        { "text": "¿Te inhibes al entrar a un lugar nuevo con gente desconocida?" },
+        { "text": "¿Tienes interés por saber cuáles son las causas que determinan ciertos fenómenos, aunque saberlo no incida en tu vida?" }
+      ]
+    }
+  }
+}
