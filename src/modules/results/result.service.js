@@ -31,6 +31,75 @@ function bitToNumber(bitVal) {
 	return Number(bitVal) || 0;
 }
 
+exports.reportePorUsuario = async (id_usuario) => {
+    if (!Number.isInteger(id_usuario)) throw { status: 400, message: 'id_usuario debe ser numérico.' };
+
+    const rows = await sequelize.query(`
+        SELECT 
+            m.nombre AS materia,
+            p.tipo,
+            COUNT(*) AS total_respuestas_usuario,
+            (
+                SELECT COUNT(*)
+                FROM pregunta p2
+                WHERE p2.id_materia = m.id
+                  AND p2.tipo = p.tipo
+            ) AS total_preguntas_materia_tipo
+        FROM resultados r
+        JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+        JOIN materia m ON p.id_materia = m.id
+        WHERE r.id_usuario = :id_usuario
+          AND JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true'
+        GROUP BY m.nombre, p.tipo
+        ORDER BY m.nombre DESC, p.tipo;
+    `, { 
+        replacements: { id_usuario }, 
+        type: sequelize.QueryTypes.SELECT 
+    });
+};
+
+exports.reportePorCurp = async (curp) => {
+    if (!curp || typeof curp !== 'string') throw { status: 400, message: 'curp debe ser un string.' };
+
+    // Busca el usuario por CURP
+    const usuario = await sequelize.models.usuarios.findOne({ where: { curp } });
+    if (!usuario) throw { status: 404, message: 'Usuario no encontrado.' };
+
+    const rows = await sequelize.query(`
+        SELECT 
+            m.nombre AS materia,
+            p.tipo,
+            COUNT(*) AS total_respuestas_usuario,
+            (
+                SELECT COUNT(*)
+                FROM pregunta p2
+                WHERE p2.id_materia = m.id
+                  AND p2.tipo = p.tipo
+            ) AS total_preguntas_materia_tipo
+        FROM resultados r
+        JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+        JOIN materia m ON p.id_materia = m.id
+        WHERE r.id_usuario = :id_usuario
+          AND JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true'
+        GROUP BY m.nombre, p.tipo
+        ORDER BY m.nombre DESC, p.tipo;
+    `, { 
+        replacements: { id_usuario: usuario.id }, 
+        type: sequelize.QueryTypes.SELECT 
+    });
+
+    // Convierte el campo tipo de Buffer a número y agrega tipo_texto
+    return rows.map(row => {
+        let tipoNum = Buffer.isBuffer(row.tipo) ? row.tipo.readUInt8(0) : row.tipo;
+        let tipoTexto = tipoNum === 1 ? 'interés' : (tipoNum === 0 ? 'aptitud' : 'otro');
+        return {
+            ...row,
+            tipo: tipoNum,
+            tipo_texto: tipoTexto
+        };
+    });
+};
+
 // Create result rows per answer for the current user (metaData = 1|0). Only one attempt allowed.
 exports.submit = async (userCurp, payload) => {
 	

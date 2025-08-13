@@ -12,6 +12,28 @@ exports.submit = async (req, res) => {
 	}
 };
 
+const resultService = require('./result.service');
+
+exports.reportePorUsuario = async (req, res, next) => {
+    try {
+        const id_usuario = parseInt(req.params.id_usuario, 10);
+        const data = await resultService.reportePorUsuario(id_usuario);
+        res.json(data);
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.reportePorCurp = async (req, res, next) => {
+    try {
+        const curp = req.params.curp;
+        const data = await resultService.reportePorCurp(curp);
+        res.json(data);
+    } catch (err) {
+        next(err);
+    }
+};
+
 // GET /api/resultados?curp=...
 exports.list = async (req, res) => {
 	try {
