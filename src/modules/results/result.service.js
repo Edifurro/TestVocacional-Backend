@@ -66,23 +66,23 @@ exports.reportePorCurp = async (curp) => {
     if (!usuario) throw { status: 404, message: 'Usuario no encontrado.' };
 
     const rows = await sequelize.query(`
-        SELECT 
+         SELECT 
             m.nombre AS materia,
             p.tipo,
-            COUNT(*) AS total_respuestas_usuario,
+            COALESCE(COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' THEN 1 END), 0) AS total_respuestas_usuario,
             (
                 SELECT COUNT(*)
                 FROM pregunta p2
                 WHERE p2.id_materia = m.id
                   AND p2.tipo = p.tipo
             ) AS total_preguntas_materia_tipo
-        FROM resultados r
-        JOIN pregunta p ON r.id_pregunta = p.id_pregunta
-        JOIN materia m ON p.id_materia = m.id
-        WHERE r.id_usuario = :id_usuario
-          AND JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true'
-        GROUP BY m.nombre, p.tipo
-        ORDER BY m.nombre DESC, p.tipo;
+        FROM materia m
+        CROSS JOIN (SELECT DISTINCT tipo FROM pregunta) pt
+        LEFT JOIN pregunta p ON m.id = p.id_materia AND p.tipo = pt.tipo
+        LEFT JOIN resultados r ON r.id_pregunta = p.id_pregunta AND r.id_usuario = :id_usuario
+        WHERE EXISTS (SELECT 1 FROM pregunta p3 WHERE p3.id_materia = m.id AND p3.tipo = pt.tipo)
+        GROUP BY m.nombre, pt.tipo
+        ORDER BY m.nombre DESC, pt.tipo;
     `, { 
         replacements: { id_usuario: usuario.id }, 
         type: sequelize.QueryTypes.SELECT 
@@ -122,11 +122,14 @@ exports.submit = async (userCurp, payload) => {
 		throw { status: 409, message: 'El aspirante ya envió sus respuestas. Sólo se permite una vez.' };
 	}
 
-	const rows = answers.map(a => ({
-		id_usuario: usuario.id,
-		id_pregunta: a.id_pregunta,
-		metaData: JSON.stringify(toYes(a.respuesta ?? a.answer ?? a.value) ? 1 : 0)
-	}));
+	 const rows = answers.map(a => {
+        const respuestaBoolean = toYes(a.respuesta ?? a.answer ?? a.value);
+        return {
+            id_usuario: usuario.id,
+            id_pregunta: a.id_pregunta,
+            metaData: JSON.stringify({ respuesta: respuestaBoolean })
+        };
+    });
 	
 	const created = await sequelize.models.resultados.bulkCreate(rows);
 	
