@@ -32,7 +32,7 @@ exports.getDashboard = async ({ page = 1, pageSize = 10, name, curp }) => {
 
 	const { count, rows: users } = await sequelize.models.usuarios.findAndCountAll({
 		where,
-		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'role'],
+		attributes: [ 'id','curp', 'nombre', 'apellidos', 'email'],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
@@ -42,23 +42,60 @@ exports.getDashboard = async ({ page = 1, pageSize = 10, name, curp }) => {
 		return { items: [], page, pageSize, total: count, totalPages: Math.ceil(count / pageSize) };
 	}
 
+
 	const userIds = users.map(u => u.id);
-	// Traer resultados + pregunta para distinguir aptitud/interes; no necesitamos materia para dashboard general
+
+	// SQL: para cada usuario, materia con más interés 'sí'
+	const topCarreraRows = await sequelize.query(`
+		SELECT t.id_usuario, t.materia, t.interes_si FROM (
+			SELECT 
+				u.id as id_usuario,
+				m.nombre AS materia,
+				COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) AS interes_si,
+				ROW_NUMBER() OVER (PARTITION BY u.id ORDER BY COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) DESC) as rn
+			FROM usuarios u
+			LEFT JOIN resultados r ON r.id_usuario = u.id
+			LEFT JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+			LEFT JOIN materia m ON p.id_materia = m.id
+			WHERE u.id IN (:userIds)
+			GROUP BY u.id, m.nombre
+		) t WHERE t.rn = 1 AND t.interes_si > 0
+	`, {
+		replacements: { userIds },
+		type: sequelize.QueryTypes.SELECT
+	});
+	const carreraPorUsuario = {};
+	for (const row of topCarreraRows) {
+		if (row.id_usuario && row.materia) {
+			carreraPorUsuario[row.id_usuario] = row.materia;
+		}
+	}
+
+	// Traer resultados + pregunta para totales generales (aptitud/interes)
 	const resultados = await sequelize.models.resultados.findAll({
-		where: { id_usuario: userIds },
-		include: [{ model: sequelize.models.pregunta, as: 'id_pregunta_preguntum', attributes: ['tipo'] }]
+			where: { id_usuario: userIds },
+			include: [{
+					model: sequelize.models.pregunta,
+					as: 'id_pregunta_preguntum',
+					attributes: ['tipo']
+			}]
 	});
 
-	const byUser = new Map(users.map(u => [u.id, { usuario: u.toJSON(), resumen: { total_respuestas: 0, aptitud_si: 0, interes_si: 0 } }]));
+	const byUser = new Map(users.map(u => [u.id, {
+			  usuario: u.toJSON(),
+			  resumen: { total_respuestas: 0 },
+			  carrera_recomendada: null
+	}]));
 	for (const r of resultados) {
-		const bucket = byUser.get(r.id_usuario);
-		if (!bucket) continue;
-		const yes = toYesFromMeta(r.metaData);
-		const tipoNum = bitToNumber(r.id_pregunta_preguntum?.tipo);
-		bucket.resumen.total_respuestas += 1;
-		if (yes) {
-			if (tipoNum === 1) bucket.resumen.interes_si += 1; else bucket.resumen.aptitud_si += 1;
-		}
+			  const bucket = byUser.get(r.id_usuario);
+			  if (!bucket) continue;
+			  bucket.resumen.total_respuestas += 1;
+	}
+	// Asignar carrera recomendada
+	for (const [id, bucket] of byUser.entries()) {
+			if (carreraPorUsuario[id]) {
+					bucket.carrera_recomendada = carreraPorUsuario[id];
+			}
 	}
 
 	return {
@@ -81,7 +118,7 @@ exports.getStudents = async ({ page = 1, pageSize = 10, name, curp }) => {
 	}
 	const { count, rows } = await sequelize.models.usuarios.findAndCountAll({
 		where,
-		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'role'],
+		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email'],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
@@ -90,13 +127,21 @@ exports.getStudents = async ({ page = 1, pageSize = 10, name, curp }) => {
 };
 
 function toCSV(rows) {
-	const header = ['id', 'curp', 'nombre', 'apellidos', 'email', 'total_respuestas', 'aptitud_si', 'interes_si'];
-	const lines = [header.join(',')];
-	for (const r of rows) {
-		const u = r.usuario; const s = r.resumen;
-		lines.push([u.id, u.curp, JSON.stringify(u.nombre), JSON.stringify(u.apellidos), JSON.stringify(u.email), s.total_respuestas, s.aptitud_si, s.interes_si].join(','));
-	}
-	return lines.join('\n');
+       const header = ['id', 'curp', 'nombre', 'apellidos', 'email', 'total_respuestas', 'carrera_recomendada'];
+       const lines = [header.join(',')];
+       for (const r of rows) {
+	       const u = r.usuario; const s = r.resumen;
+	       lines.push([
+		       u.id,
+		       u.curp,
+		       JSON.stringify(u.nombre),
+		       JSON.stringify(u.apellidos),
+		       JSON.stringify(u.email),
+		       s.total_respuestas,
+		       r.carrera_recomendada || ''
+	       ].join(','));
+       }
+       return lines.join('\n');
 }
 
 exports.exportReport = async ({ format = 'csv', name, curp }) => {
@@ -115,31 +160,56 @@ exports.exportReport = async ({ format = 'csv', name, curp }) => {
 		where: { id_usuario: userIds },
 		include: [{ model: sequelize.models.pregunta, as: 'id_pregunta_preguntum', attributes: ['tipo'] }]
 	});
-	const byUser = new Map(users.map(u => [u.id, { usuario: u.toJSON(), resumen: { total_respuestas: 0, aptitud_si: 0, interes_si: 0 } }]));
-	for (const r of resultados) {
-		const bucket = byUser.get(r.id_usuario);
-		if (!bucket) continue;
-		const yes = toYesFromMeta(r.metaData);
-		const tipoNum = bitToNumber(r.id_pregunta_preguntum?.tipo);
-		bucket.resumen.total_respuestas += 1;
-		if (yes) {
-			if (tipoNum === 1) bucket.resumen.interes_si += 1; else bucket.resumen.aptitud_si += 1;
-		}
-	}
-	const items = Array.from(byUser.values());
-	if (format === 'csv') {
-		return { type: 'csv', data: toCSV(items) };
-	} else if (format === 'pdf') {
-		// PDF se genera en controller usando pdfkit con estos items
-		return { type: 'pdf', data: items };
-	}
-	throw { status: 400, message: 'format debe ser csv o pdf' };
+       const byUser = new Map(users.map(u => [u.id, { usuario: u.toJSON(), resumen: { total_respuestas: 0 }, carrera_recomendada: null }]));
+       for (const r of resultados) {
+	       const bucket = byUser.get(r.id_usuario);
+	       if (!bucket) continue;
+	       bucket.resumen.total_respuestas += 1;
+       }
+       // Recomendar carrera igual que en dashboard
+       const topCarreraRows = await sequelize.query(`
+	       SELECT t.id_usuario, t.materia, t.interes_si FROM (
+		       SELECT 
+			       u.id as id_usuario,
+			       m.nombre AS materia,
+			       COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) AS interes_si,
+			       ROW_NUMBER() OVER (PARTITION BY u.id ORDER BY COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) DESC) as rn
+		       FROM usuarios u
+		       LEFT JOIN resultados r ON r.id_usuario = u.id
+		       LEFT JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+		       LEFT JOIN materia m ON p.id_materia = m.id
+		       WHERE u.id IN (:userIds)
+		       GROUP BY u.id, m.nombre
+	       ) t WHERE t.rn = 1 AND t.interes_si > 0
+       `, {
+	       replacements: { userIds },
+	       type: sequelize.QueryTypes.SELECT
+       });
+       const carreraPorUsuario = {};
+       for (const row of topCarreraRows) {
+	       if (row.id_usuario && row.materia) {
+		       carreraPorUsuario[row.id_usuario] = row.materia;
+	       }
+       }
+       for (const [id, bucket] of byUser.entries()) {
+	       if (carreraPorUsuario[id]) {
+		       bucket.carrera_recomendada = carreraPorUsuario[id];
+	       }
+       }
+       const items = Array.from(byUser.values());
+       if (format === 'csv') {
+	       return { type: 'csv', data: toCSV(items) };
+       } else if (format === 'pdf') {
+	       // PDF se genera en controller usando pdfkit con estos items
+	       return { type: 'pdf', data: items };
+       }
+       throw { status: 400, message: 'format debe ser csv o pdf' };
 };
 
 // Users CRUD (admin)
 exports.listUsers = async ({ page = 1, pageSize = 10 }) => {
 	const { count, rows } = await sequelize.models.usuarios.findAndCountAll({
-		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'role'],
+		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', ],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
