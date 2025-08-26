@@ -209,7 +209,8 @@ exports.exportReport = async ({ format = 'csv', name, curp }) => {
 // Users CRUD (admin)
 exports.listUsers = async ({ page = 1, pageSize = 10 }) => {
 	const { count, rows } = await sequelize.models.usuarios.findAndCountAll({
-		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', ],
+		where: { role: 'aspirante' }, // Solo mostrar usuarios con rol aspirante
+		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'password'],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
@@ -250,6 +251,19 @@ exports.updateUser = async (id, { email, password, nombre, apellidos, role }) =>
 exports.deleteUser = async (id) => {
 	const u = await sequelize.models.usuarios.findByPk(id);
 	if (!u) throw { status: 404, message: 'Usuario no encontrado' };
+	
+	// Primero eliminar todas las respuestas del usuario
+	const respuestasCount = await sequelize.models.resultados.count({ where: { id_usuario: id } });
+	if (respuestasCount > 0) {
+		await sequelize.models.resultados.destroy({ where: { id_usuario: id } });
+	}
+	
+	// Luego eliminar el usuario
 	await u.destroy();
-	return { message: 'Usuario eliminado', id };
+	
+	return { 
+		message: 'Usuario eliminado correctamente', 
+		id,
+		respuestas_eliminadas: respuestasCount
+	};
 };

@@ -12,4 +12,7 @@ router.get('/', auth, controller.list);
 router.get('/reporte/:id_usuario', auth,controller.reportePorUsuario);
 router.get('/reporte/curp/:curp', auth, controller.reportePorCurp);
 
+// Eliminar todas las respuestas de un aspirante (solo admin)
+router.delete('/curp/:curp', auth, controller.deleteResultsByUser);
+
 module.exports = router;

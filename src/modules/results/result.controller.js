@@ -45,3 +45,18 @@ exports.list = async (req, res) => {
 		res.status(err.status || 500).json({ message: err.message || 'Error al obtener resultados' });
 	}
 };
+
+// DELETE /api/resultados/curp/:curp - Eliminar todas las respuestas de un aspirante
+exports.deleteResultsByUser = async (req, res) => {
+	try {
+		const requester = req.user;
+		if (!requester) return res.status(401).json({ message: 'No autenticado' });
+		if (requester.role !== 'admin') return res.status(403).json({ message: 'Solo admin puede eliminar respuestas' });
+		
+		const curp = req.params.curp;
+		const result = await service.deleteResultsByUser(curp);
+		res.json(result);
+	} catch (err) {
+		res.status(err.status || 500).json({ message: err.message || 'Error al eliminar respuestas' });
+	}
+};

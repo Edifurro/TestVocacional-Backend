@@ -65,8 +65,26 @@ exports.reportePorCurp = async (curp) => {
     const usuario = await sequelize.models.usuarios.findOne({ where: { curp } });
     if (!usuario) throw { status: 404, message: 'Usuario no encontrado.' };
 
+    // Primero verificar si el usuario tiene respuestas
+    const totalRespuestas = await sequelize.models.resultados.count({ 
+        where: { id_usuario: usuario.id } 
+    });
+
+    // Si no tiene respuestas, devolver mensaje
+    if (totalRespuestas === 0) {
+        return {
+            message: 'El usuario no ha respondido el test vocacional',
+            usuario: {
+                curp: usuario.curp,
+                nombre: usuario.nombre
+            },
+            respuestas_registradas: 0
+        };
+    }
+
+    // Si tiene respuestas, ejecutar la consulta que incluye todas las materias
     const rows = await sequelize.query(`
-         SELECT 
+        SELECT 
             m.nombre AS materia,
             p.tipo,
             COALESCE(COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' THEN 1 END), 0) AS total_respuestas_usuario,
@@ -269,4 +287,32 @@ exports.list = async (requesterRole, requesterCurp, queryCurp, queryUserId) => {
 		};
 
 	return { results, resumen };
+};
+
+// Eliminar todas las respuestas de un aspirante por CURP (solo admin)
+exports.deleteResultsByUser = async (curp) => {
+	if (!curp || typeof curp !== 'string') throw { status: 400, message: 'CURP requerido' };
+
+	// Buscar el usuario por CURP
+	const usuario = await sequelize.models.usuarios.findOne({ where: { curp } });
+	if (!usuario) throw { status: 404, message: 'Usuario no encontrado' };
+
+	// Contar cuántas respuestas tiene
+	const count = await sequelize.models.resultados.count({ where: { id_usuario: usuario.id } });
+	
+	if (count === 0) {
+		return { message: 'El usuario no tiene respuestas que eliminar', count: 0 };
+	}
+
+	// Eliminar todas las respuestas del usuario
+	await sequelize.models.resultados.destroy({ where: { id_usuario: usuario.id } });
+
+	return { 
+		message: `Se eliminaron todas las respuestas del usuario ${usuario.nombre}`, 
+		count,
+		usuario: {
+			curp: usuario.curp,
+			nombre: usuario.nombre
+		}
+	};
 };
