@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/db');
+const helmet = require('helmet');
 
 // Rutas de módulos
 const userRoutes = require('./modules/users/user.routes');
@@ -12,9 +13,10 @@ const { initModels } = require('./models/init-models');
 
 const app = express();
 
-// Middlewares globales
+
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
 
 // Rutas API por módulo
 app.use('/api/users', userRoutes);
