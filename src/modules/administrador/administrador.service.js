@@ -1,7 +1,7 @@
 const sequelize = require('../../config/db');
 const bcrypt = require('bcrypt');
-// const initModels = require('../../models/init-models');
-// initModels(sequelize);
+const initModels = require('../../models/init-models');
+initModels(sequelize);
 
 const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]{2}$/i;
 
