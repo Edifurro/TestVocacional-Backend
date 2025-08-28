@@ -1,6 +1,6 @@
 const sequelize = require('../../config/db');
-const initModels = require('../../models/init-models');
-initModels(sequelize);
+// const initModels = require('../../models/init-models');
+// initModels(sequelize);
 
 // Helper to safely parse JSON stored in TEXT
 function safeParse(jsonStr) {

@@ -1,8 +1,8 @@
 // Servicio para gestión de preguntas
-const sequelize = require('../../config/db');
-const initModels = require('../../models/init-models');
-const models = initModels(sequelize);
-const Pregunta = models.pregunta;
+// const sequelize = require('../../config/db');
+// const initModels = require('../../models/init-models');
+// const models = initModels(sequelize);
+// const Pregunta = models.pregunta;
 
 // Convierte el campo BIT(2) (Buffer) a número 0|1
 function bitToNumber(bitVal) {

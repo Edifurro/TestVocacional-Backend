@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/db');
+// const sequelize = require('./config/db');
 const helmet = require('helmet');
 
 // Rutas de módulos
@@ -8,8 +8,8 @@ const userRoutes = require('./modules/users/user.routes');
 const resultRoutes = require('./modules/results/result.routes'); // nueva ruta
 const preguntasRoutes = require('./modules/preguntas/preguntas.routes');
 const adminRoutes = require('./modules/administrador/administrador.routes');
-const { default: SequelizeAuto } = require('sequelize-auto');
-const { initModels } = require('./models/init-models');
+// const { default: SequelizeAuto } = require('sequelize-auto');
+// const { initModels } = require('./models/init-models');
 
 const app = express();
 
@@ -26,13 +26,13 @@ app.use('/api/admin', adminRoutes);
 
 
 // Test de conexión a la BD
-sequelize.authenticate()
+// sequelize.authenticate()
 
-  .then(() => {
+//   .then(() => {
 
-    console.log('✅ Conexión a BD exitosa');
-  })
+//     console.log('✅ Conexión a BD exitosa');
+//   })
 
-  .catch(err => console.error('❌ Error al conectar BD:', err));
+//   .catch(err => console.error('❌ Error al conectar BD:', err));
 
 module.exports = app;
