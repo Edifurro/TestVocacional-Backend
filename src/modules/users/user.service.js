@@ -10,6 +10,10 @@ exports.register = async (curp, email, password, nombre, apellidos) => {
   if (!curpRegex.test(curp)) {
     throw { status: 400, message: 'La CURP no tiene un formato válido.' };
   }
+  
+   if (!password || password.length < 6) {
+    throw { status: 400, message: 'La contraseña debe tener al menos 6 caracteres.' };
+  }
   // Verificar que la curp y el email no existan
   const existsCurp = await sequelize.models.usuarios.findOne({ where: { curp } });
 

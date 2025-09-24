@@ -1,11 +1,13 @@
 var DataTypes = require("sequelize").DataTypes;
 var _materia = require("./materia");
+var _password_resets = require("./password_resets");
 var _pregunta = require("./pregunta");
 var _resultados = require("./resultados");
 var _usuarios = require("./usuarios");
 
 function initModels(sequelize) {
   var materia = _materia(sequelize, DataTypes);
+  var password_resets = _password_resets(sequelize, DataTypes);
   var pregunta = _pregunta(sequelize, DataTypes);
   var resultados = _resultados(sequelize, DataTypes);
   var usuarios = _usuarios(sequelize, DataTypes);
@@ -19,6 +21,7 @@ function initModels(sequelize) {
 
   return {
     materia,
+    password_resets,
     pregunta,
     resultados,
     usuarios,

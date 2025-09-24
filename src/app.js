@@ -10,6 +10,7 @@ const preguntasRoutes = require('./modules/preguntas/preguntas.routes');
 const adminRoutes = require('./modules/administrador/administrador.routes');
 const { default: SequelizeAuto } = require('sequelize-auto');
 const { initModels } = require('./models/init-models');
+const recoveryRoutes = require('./modules/recovery/recovery.routes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/preguntas', preguntasRoutes);
 app.use('/api/resultados', resultRoutes);
 app.use('/api/admin', adminRoutes);
+app.use ('/api/recovery', recoveryRoutes);
 
 
 // Test de conexión a la BD
