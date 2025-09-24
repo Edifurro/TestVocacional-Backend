@@ -8,44 +8,62 @@ const { Op } = require('sequelize');
 
 
 exports.sendResetCode = async (email) => {
-     try {
-          const user = await usuarios.findOne({ where: { email } });
-          if (!user) return; // No revelar si existe o no
+    try {
+        const user = await usuarios.findOne({ where: { email } });
+        if (!user) return;
 
-          // Generar código de 6 dígitos
-          const code = Math.floor(100000 + Math.random() * 900000).toString();
+        // Busca el último registro para ese email
+        const lastReset = await password_resets.findOne({
+            where: { email },
+            order: [['createdAt', 'DESC']]
+        });
 
-          // Guardar en tabla password_resets (marcar anteriores como usados)
-          await password_resets.update({ used: 1 }, { where: { email } });
-          await password_resets.create({
-               email,
-               code,
-               expires_at: new Date(Date.now() + 10 * 60 * 1000), // 10 minutos
-               used: 0
-          });
+        // Lógica de cooldown progresivo
+        let cooldown = 60; // 1 minuto inicial
+        if (lastReset) {
+            cooldown = lastReset.cooldown || 60;
+            const lastSent = new Date(lastReset.createdAt).getTime();
+            const now = Date.now();
+            const diff = (now - lastSent) / 1000; // en segundos
 
-          const transporter = nodemailer.createTransport({
-               service: 'gmail',
-               auth: {
-                    user: 'testvocacionalup@gmail.com',
-                    pass: 'vceh jwzz ncbu yekk'
-               }
-          });
+            if (diff < cooldown) {
+                const wait = Math.ceil(cooldown - diff);
+                throw { status: 429, message: `Debes esperar ${wait} segundos antes de solicitar otro código.` };
+            }
+            // Duplica el cooldown hasta un máximo de 10 minutos (600s)
+            cooldown = Math.min(cooldown * 2, 600);
+        }
 
-          // Enviar correo
-          await transporter.sendMail({
-               from: '"Test Vocacional" <testvocacionalup@gmail.com>',
-               to: email,
-               subject: 'Código de recuperación',
-               text: `Tu código de recuperación es: ${code}`
-          });
-     } catch (err) {
-          console.error('Error en sendResetCode:', err);
-          throw err;
-     }
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
 
+        await password_resets.update({ used: 1 }, { where: { email } });
+        await password_resets.create({
+            email,
+            code,
+            expires_at: new Date(Date.now() + 10 * 60 * 1000),
+            used: 0,
+            cooldown // guarda el cooldown usado para el próximo intento
+        });
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'testvocacionalup@gmail.com',
+                pass: 'vceh jwzz ncbu yekk'
+            }
+        });
+
+        await transporter.sendMail({
+            from: '"Test Vocacional" <testvocacionalup@gmail.com>',
+            to: email,
+            subject: 'Código de recuperación',
+            text: `Tu código de recuperación es: ${code}`
+        });
+    } catch (err) {
+        console.error('Error en sendResetCode:', err);
+        throw err;
+    }
 };
-
 exports.verifyResetCode = async (email, code) => {
      try {
           const record = await password_resets.findOne({

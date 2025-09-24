@@ -25,7 +25,11 @@ app.use('/api/preguntas', preguntasRoutes);
 app.use('/api/resultados', resultRoutes);
 app.use('/api/admin', adminRoutes);
 app.use ('/api/recovery', recoveryRoutes);
-
+app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    const message = err.message || 'Error interno del servidor';
+    res.status(status).json({ message });
+});
 
 // Test de conexión a la BD
 sequelize.authenticate()
