@@ -30,6 +30,7 @@ exports.reportePorCurp = async (req, res, next) => {
         const data = await resultService.reportePorCurp(curp);
         res.json(data);
     } catch (err) {
+	console.log(err);
         next(err);
     }
 };

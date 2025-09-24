@@ -30,7 +30,7 @@ function bitToNumber(bitVal) {
 	if (typeof bitVal === 'number') return bitVal & 0x03;
 	return Number(bitVal) || 0;
 }
-
+	
 exports.reportePorUsuario = async (id_usuario) => {
     if (!Number.isInteger(id_usuario)) throw { status: 400, message: 'id_usuario debe ser numérico.' };
 
@@ -100,7 +100,7 @@ exports.reportePorCurp = async (curp) => {
         LEFT JOIN resultados r ON r.id_pregunta = p.id_pregunta AND r.id_usuario = :id_usuario
         WHERE EXISTS (SELECT 1 FROM pregunta p3 WHERE p3.id_materia = m.id AND p3.tipo = pt.tipo)
         GROUP BY m.nombre, pt.tipo
-        ORDER BY m.nombre DESC, pt.tipo;
+        ORDER BY m.nombre DESC, pt.tipo;	
     `, { 
         replacements: { id_usuario: usuario.id }, 
         type: sequelize.QueryTypes.SELECT 
