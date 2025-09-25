@@ -32,7 +32,7 @@ exports.getDashboard = async ({ page = 1, pageSize = 10, name, curp }) => {
 
 	const { count, rows: users } = await sequelize.models.usuarios.findAndCountAll({
 		where,
-		attributes: [ 'id','curp', 'nombre', 'apellidos', 'email'],
+		attributes: [ 'id','curp', 'nombre', 'apellidos', 'email', 'createdAt'],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
@@ -127,7 +127,7 @@ exports.getStudents = async ({ page = 1, pageSize = 10, name, curp }) => {
 };
 
 function toCSV(rows) {
-       const header = ['id', 'curp', 'nombre', 'apellidos', 'email', 'total_respuestas', 'carrera_recomendada'];
+       const header = ['id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt', 'total_respuestas', 'carrera_recomendada'];
        const lines = [header.join(',')];
        for (const r of rows) {
 	       const u = r.usuario; const s = r.resumen;
@@ -137,6 +137,7 @@ function toCSV(rows) {
 		       JSON.stringify(u.nombre),
 		       JSON.stringify(u.apellidos),
 		       JSON.stringify(u.email),
+		       JSON.stringify(u.createdAt),
 		       s.total_respuestas,
 		       r.carrera_recomendada || ''
 	       ].join(','));
@@ -154,7 +155,7 @@ exports.exportReport = async ({ format = 'csv', name, curp }) => {
 			{ apellidos: { [sequelize.Op.like]: `%${name}%` } }
 		];
 	}
-	const users = await sequelize.models.usuarios.findAll({ where, attributes: ['id', 'curp', 'nombre', 'apellidos', 'email'] });
+	const users = await sequelize.models.usuarios.findAll({ where, attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt'] });
 	const userIds = users.map(u => u.id);
 	const resultados = await sequelize.models.resultados.findAll({
 		where: { id_usuario: userIds },
@@ -210,7 +211,7 @@ exports.exportReport = async ({ format = 'csv', name, curp }) => {
 exports.listUsers = async ({ page = 1, pageSize = 10 }) => {
 	const { count, rows } = await sequelize.models.usuarios.findAndCountAll({
 		where: { role: 'aspirante' }, // Solo mostrar usuarios con rol aspirante
-		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'password'],
+		attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'password', 'createdAt'],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
