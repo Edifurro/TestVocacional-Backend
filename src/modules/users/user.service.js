@@ -5,7 +5,7 @@ const sequelize = require('../../config/db');
 // Regex oficial para CURP mexicana
 const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]{2}$/i;
 
-exports.register = async (curp, email, password, nombre, apellidos) => {
+exports.register = async (curp, email, password, nombre, apellidos, escuela_procedencia, genero) => {
   // Validar formato de CURP
   if (!curpRegex.test(curp)) {
     throw { status: 400, message: 'La CURP no tiene un formato válido.' };
@@ -39,6 +39,8 @@ exports.register = async (curp, email, password, nombre, apellidos) => {
     password: hashedPassword,
     nombre,
     apellidos,
+    escuela_procedencia,
+    genero,
     role: 'aspirante'
   });
   return {
@@ -48,6 +50,8 @@ exports.register = async (curp, email, password, nombre, apellidos) => {
       email: user.email,
       nombre: user.nombre,
       apellidos: user.apellidos,
+      escuela_procedencia: user.escuela_procedencia,
+      genero: user.genero,
       role: user.role
     }
   };

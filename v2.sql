@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-09-2025 a las 20:23:08
+-- Tiempo de generación: 01-10-2025 a las 03:46:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -57,8 +57,22 @@ CREATE TABLE `password_resets` (
   `code` varchar(6) NOT NULL,
   `expires_at` datetime NOT NULL,
   `used` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp()
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  `cooldown` int(11) DEFAULT 60
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `password_resets`
+--
+
+INSERT INTO `password_resets` (`id`, `email`, `code`, `expires_at`, `used`, `createdAt`, `updatedAt`, `cooldown`) VALUES
+(1, 'edifurro@gmail.com', '373821', '2025-09-24 19:48:28', 1, '2025-09-24 19:38:28', '2025-09-25 15:27:16', 60),
+(2, 'edifurro@gmail.com', '503719', '2025-09-24 21:05:25', 1, '2025-09-24 20:55:25', '2025-09-25 15:27:16', 60),
+(3, 'edifurro@gmail.com', '553232', '2025-09-24 22:12:25', 1, '2025-09-24 22:02:25', '2025-09-25 15:27:16', 60),
+(4, 'edifurro@gmail.com', '795092', '2025-09-24 22:16:15', 1, '2025-09-24 22:06:15', '2025-09-25 15:27:16', 60),
+(5, 'edifurro@gmail.com', '917881', '2025-09-25 15:31:10', 1, '2025-09-25 15:21:10', '2025-09-25 15:27:16', 60),
+(6, 'edifurro@gmail.com', '110050', '2025-09-25 15:37:16', 0, '2025-09-25 15:27:16', '2025-09-25 15:27:16', 60);
 
 -- --------------------------------------------------------
 
@@ -113,7 +127,7 @@ INSERT INTO `pregunta` (`id_pregunta`, `pregunta`, `id_materia`, `tipo`) VALUES
 (34, '¿Tolerarías empezar tantas veces como fuera necesario hasta obtener el logro deseado?', 3, b'01'),
 (35, '¿Cuando estás en un grupo de trabajo, te agrada producir ideas originales y que sean tenidas en cuenta?', 3, b'01'),
 (36, '¿Desearías que te regalaran algún instrumento musical para tu cumpleaños?', 3, b'01'),
-(37, '¿Harías el afiche para una campaña de prevención del SIDA?', 3, b'01'),
+(37, '¿Harías el moral para una campaña de prevención del SIDA?', 3, b'01'),
 (38, '¿Cuando eliges tu ropa o decoras un ambiente, tienes en cuenta la combinación de los colores, las telas o el estilo de los muebles?', 3, b'01'),
 (39, '¿Crees que los detalles son tan importantes como el todo?', 3, b'00'),
 (40, '¿Te gusta más el trabajo manual que el trabajo intelectual?', 3, b'00'),
@@ -142,7 +156,7 @@ INSERT INTO `pregunta` (`id_pregunta`, `pregunta`, `id_materia`, `tipo`) VALUES
 (63, '¿Te incluirías en un proyecto nacional de desarrollo de la principal fuente de recursos de tu ciudad?', 5, b'01'),
 (64, '¿Cuando se daña un electrodoméstico, rápidamente te ofreces para arreglarlo o repararlo?', 5, b'01'),
 (65, '¿Te gustaría investigar científicamente sobre cultivos agrícolas?', 5, b'01'),
-(66, '¿Enviarías tu hoja de vida a una empresa automotriz que solicita gente para su área de producción?', 5, b'01'),
+(66, '¿Enviarías curriculum a una empresa automotriz que solicita gente para su área de producción?', 5, b'01'),
 (67, '¿Planificas detalladamente tus trabajos antes de empezar?', 5, b'00'),
 (68, '¿Crees que tus ideas son importantes y haces todo lo posible para ponerlas en práctica?', 5, b'00'),
 (69, '¿Trabajar con objetos te resulta más gratificante que trabajar con personas?', 5, b'00'),
@@ -290,7 +304,104 @@ INSERT INTO `resultados` (`id_resultado`, `id_pregunta`, `id_usuario`, `metaData
 (762, 95, 6, '{\"respuesta\":false}'),
 (763, 96, 6, '{\"respuesta\":false}'),
 (764, 97, 6, '{\"respuesta\":false}'),
-(765, 98, 6, '{\"respuesta\":false}');
+(765, 98, 6, '{\"respuesta\":false}'),
+(766, 2, 9, '{\"respuesta\":true}'),
+(767, 3, 9, '{\"respuesta\":false}'),
+(768, 4, 9, '{\"respuesta\":true}'),
+(769, 5, 9, '{\"respuesta\":false}'),
+(770, 6, 9, '{\"respuesta\":true}'),
+(771, 7, 9, '{\"respuesta\":false}'),
+(772, 8, 9, '{\"respuesta\":true}'),
+(773, 9, 9, '{\"respuesta\":false}'),
+(774, 10, 9, '{\"respuesta\":false}'),
+(775, 11, 9, '{\"respuesta\":true}'),
+(776, 12, 9, '{\"respuesta\":false}'),
+(777, 13, 9, '{\"respuesta\":true}'),
+(778, 14, 9, '{\"respuesta\":true}'),
+(779, 15, 9, '{\"respuesta\":false}'),
+(780, 16, 9, '{\"respuesta\":true}'),
+(781, 17, 9, '{\"respuesta\":true}'),
+(782, 18, 9, '{\"respuesta\":false}'),
+(783, 19, 9, '{\"respuesta\":true}'),
+(784, 20, 9, '{\"respuesta\":false}'),
+(785, 21, 9, '{\"respuesta\":true}'),
+(786, 22, 9, '{\"respuesta\":false}'),
+(787, 23, 9, '{\"respuesta\":true}'),
+(788, 24, 9, '{\"respuesta\":true}'),
+(789, 25, 9, '{\"respuesta\":false}'),
+(790, 26, 9, '{\"respuesta\":true}'),
+(791, 27, 9, '{\"respuesta\":true}'),
+(792, 28, 9, '{\"respuesta\":true}'),
+(793, 29, 9, '{\"respuesta\":true}'),
+(794, 30, 9, '{\"respuesta\":false}'),
+(795, 31, 9, '{\"respuesta\":true}'),
+(796, 32, 9, '{\"respuesta\":false}'),
+(797, 33, 9, '{\"respuesta\":true}'),
+(798, 34, 9, '{\"respuesta\":false}'),
+(799, 35, 9, '{\"respuesta\":true}'),
+(800, 36, 9, '{\"respuesta\":true}'),
+(801, 37, 9, '{\"respuesta\":false}'),
+(802, 38, 9, '{\"respuesta\":true}'),
+(803, 39, 9, '{\"respuesta\":true}'),
+(804, 40, 9, '{\"respuesta\":false}'),
+(805, 41, 9, '{\"respuesta\":false}'),
+(806, 42, 9, '{\"respuesta\":true}'),
+(807, 43, 9, '{\"respuesta\":true}'),
+(808, 44, 9, '{\"respuesta\":true}'),
+(809, 45, 9, '{\"respuesta\":true}'),
+(810, 46, 9, '{\"respuesta\":false}'),
+(811, 47, 9, '{\"respuesta\":true}'),
+(812, 48, 9, '{\"respuesta\":true}'),
+(813, 49, 9, '{\"respuesta\":true}'),
+(814, 50, 9, '{\"respuesta\":false}'),
+(815, 51, 9, '{\"respuesta\":true}'),
+(816, 52, 9, '{\"respuesta\":true}'),
+(817, 53, 9, '{\"respuesta\":false}'),
+(818, 54, 9, '{\"respuesta\":true}'),
+(819, 55, 9, '{\"respuesta\":true}'),
+(820, 56, 9, '{\"respuesta\":true}'),
+(821, 57, 9, '{\"respuesta\":false}'),
+(822, 58, 9, '{\"respuesta\":true}'),
+(823, 59, 9, '{\"respuesta\":false}'),
+(824, 60, 9, '{\"respuesta\":false}'),
+(825, 61, 9, '{\"respuesta\":false}'),
+(826, 62, 9, '{\"respuesta\":true}'),
+(827, 63, 9, '{\"respuesta\":false}'),
+(828, 64, 9, '{\"respuesta\":false}'),
+(829, 65, 9, '{\"respuesta\":false}'),
+(830, 66, 9, '{\"respuesta\":false}'),
+(831, 67, 9, '{\"respuesta\":true}'),
+(832, 68, 9, '{\"respuesta\":true}'),
+(833, 69, 9, '{\"respuesta\":false}'),
+(834, 70, 9, '{\"respuesta\":true}'),
+(835, 71, 9, '{\"respuesta\":false}'),
+(836, 72, 9, '{\"respuesta\":true}'),
+(837, 73, 9, '{\"respuesta\":false}'),
+(838, 74, 9, '{\"respuesta\":false}'),
+(839, 75, 9, '{\"respuesta\":true}'),
+(840, 76, 9, '{\"respuesta\":true}'),
+(841, 77, 9, '{\"respuesta\":false}'),
+(842, 78, 9, '{\"respuesta\":false}'),
+(843, 79, 9, '{\"respuesta\":false}'),
+(844, 80, 9, '{\"respuesta\":true}'),
+(845, 81, 9, '{\"respuesta\":false}'),
+(846, 82, 9, '{\"respuesta\":false}'),
+(847, 83, 9, '{\"respuesta\":false}'),
+(848, 84, 9, '{\"respuesta\":false}'),
+(849, 85, 9, '{\"respuesta\":false}'),
+(850, 86, 9, '{\"respuesta\":true}'),
+(851, 87, 9, '{\"respuesta\":true}'),
+(852, 88, 9, '{\"respuesta\":false}'),
+(853, 89, 9, '{\"respuesta\":false}'),
+(854, 90, 9, '{\"respuesta\":false}'),
+(855, 91, 9, '{\"respuesta\":false}'),
+(856, 92, 9, '{\"respuesta\":false}'),
+(857, 93, 9, '{\"respuesta\":false}'),
+(858, 94, 9, '{\"respuesta\":false}'),
+(859, 95, 9, '{\"respuesta\":false}'),
+(860, 96, 9, '{\"respuesta\":true}'),
+(861, 97, 9, '{\"respuesta\":false}'),
+(862, 98, 9, '{\"respuesta\":true}');
 
 -- --------------------------------------------------------
 
@@ -307,18 +418,22 @@ CREATE TABLE `usuarios` (
   `password` varchar(255) NOT NULL,
   `role` enum('aspirante','admin') DEFAULT 'aspirante',
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `updatedAt` int(11) NOT NULL
+  `updatedAt` int(11) NOT NULL,
+  `escuela_procedencia` varchar(200) DEFAULT NULL,
+  `genero` enum('hombre','mujer') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `curp`, `nombre`, `apellidos`, `email`, `password`, `role`, `createdAt`, `updatedAt`) VALUES
-(3, 'MEIA030529HQRNTNA6', 'Angel', 'Mendez', 'usuario@example.com', '$2b$10$.NxbvUzkFttiRhzMPdtUf.kTLUCc9yhVx4bqZzLQtPFKNg9FslHhe', 'aspirante', '2025-09-19 20:45:17', 0),
-(6, 'ROLE020901HCSBPDA9', 'Edigatason', 'Robles', 'Eample@outlook.com', '$2b$10$YGmR16RZzub/CNTeh0LlROShpw/HnwnUBYGK5e5iK6Omcs5gVedaS', 'aspirante', '2025-09-19 20:45:17', 0),
-(7, 'MEIA991204HQRNTR03', 'Aaron', 'Mendez', 'Example@outlook.com', '$2b$10$kShaXms4Y3Buo9uSkT8dOucVTCmGeUUfysipH.3Nqgcmwub.whUyC', 'aspirante', '2025-09-19 20:45:17', 0),
-(8, 'ROLE020901HCSBPDE1', 'EDISON', 'ROBLES', 'EDI@GMAIL.COM', '$2b$10$nCJhYssNObNfNUbHi1KVwu/TnbgKmMb4AjOwmZGr7enT3MvIf4R.6', 'aspirante', '2025-09-19 02:02:46', 2025);
+INSERT INTO `usuarios` (`id`, `curp`, `nombre`, `apellidos`, `email`, `password`, `role`, `createdAt`, `updatedAt`, `escuela_procedencia`, `genero`) VALUES
+(3, 'MEIA030529HQRNTNA6', 'Angel', 'Mendez', 'usuario@example.com', '$2b$10$.NxbvUzkFttiRhzMPdtUf.kTLUCc9yhVx4bqZzLQtPFKNg9FslHhe', 'aspirante', '2025-09-19 20:45:17', 0, NULL, 'mujer'),
+(6, 'ROLE020901HCSBPDA9', 'Edigatason', 'Robles', 'edifurro@gmail.com', '$2b$10$5CmTHtg4rsMQ3l4rCpbcBuN5va8wjCZhfjCItF4oPft.0rOFk0kpy', 'admin', '2025-09-19 20:45:17', 2025, NULL, NULL),
+(7, 'MEIA991204HQRNTR03', 'Aaron', 'Mendez', 'Example@outlook.com', '$2b$10$kShaXms4Y3Buo9uSkT8dOucVTCmGeUUfysipH.3Nqgcmwub.whUyC', 'aspirante', '2025-09-19 20:45:17', 0, NULL, NULL),
+(8, 'ROLE020901HCSBPDE1', 'EDISON', 'ROBLES', 'EDI@GMAIL.COM', '$2b$10$nCJhYssNObNfNUbHi1KVwu/TnbgKmMb4AjOwmZGr7enT3MvIf4R.6', 'aspirante', '2025-09-19 02:02:46', 2025, NULL, NULL),
+(9, 'COML990516MQRLRR06', 'Loren de los Angeles', 'Colli Martinez', 'Lorenciana16@gmail.com', '$2b$10$mjv.gpyMMg.bXG7QVchjr.Il4Io84oSGrzeypP/Ngw5q44P.m7FJe', 'aspirante', '2025-09-25 16:24:02', 2025, NULL, NULL),
+(13, 'ABCD990101HDFLRS03', 'Juan', 'Pérez', 'ejemplo3@correo.com', '$2b$10$EPCtv.i2UkebqNYIZtIH9.DFuG1JTpOhBCzWudOueozp1OCT9uX52', 'aspirante', '2025-10-01 01:23:19', 2025, 'CBTIS 111', 'hombre');
 
 --
 -- Índices para tablas volcadas
@@ -373,7 +488,7 @@ ALTER TABLE `materia`
 -- AUTO_INCREMENT de la tabla `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `pregunta`
@@ -385,13 +500,13 @@ ALTER TABLE `pregunta`
 -- AUTO_INCREMENT de la tabla `resultados`
 --
 ALTER TABLE `resultados`
-  MODIFY `id_resultado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=766;
+  MODIFY `id_resultado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=863;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas

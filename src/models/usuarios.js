@@ -32,6 +32,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.ENUM('aspirante','admin'),
       allowNull: true,
       defaultValue: "aspirante"
+    },
+    escuela_procedencia: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    genero: {
+      type: DataTypes.ENUM('hombre','mujer'),
+      allowNull: true
     }
   }, {
     sequelize,

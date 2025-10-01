@@ -1,16 +1,16 @@
 const userService = require('./user.service');
 
 exports.register = async (req, res) => {
-  const { curp, email, password, nombre, apellidos } = req.body;
-  if (!curp || !email || !password || !nombre || !apellidos) {
-    return res.status(400).json({ message: 'CURP, email, contraseña, nombre y apellidos requeridos.' });
+  const { curp, email, password, nombre, apellidos, escuela_procedencia, genero } = req.body;
+  if (!curp || !email || !password || !nombre || !apellidos || !escuela_procedencia || !genero) {
+    return res.status(400).json({ message: 'CURP, email, contraseña, nombre, apellidos, escuela de procedencia y género requeridos.' });
   }
   if (curp.length !== 18) {
     return res.status(400).json({ message: 'La CURP debe tener 18 caracteres.' });
   }
   try {
     debugger
-    const result = await userService.register(curp, email, password, nombre, apellidos);
+    const result = await userService.register(curp, email, password, nombre, apellidos, escuela_procedencia, genero);
     res.status(201).json(result);
   } catch (err) {
     debugger

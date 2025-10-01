@@ -32,7 +32,7 @@ exports.getDashboard = async ({ page = 1, pageSize = 10, name, curp }) => {
 
 	const { count, rows: users } = await sequelize.models.usuarios.findAndCountAll({
 		where,
-		attributes: [ 'id','curp', 'nombre', 'apellidos', 'email', 'createdAt'],
+		attributes: [ 'id','curp', 'nombre', 'apellidos', 'email', 'createdAt', 'genero', 'escuela_procedencia' ],
 		limit: pageSize,
 		offset: (page - 1) * pageSize,
 		order: [['id', 'ASC']]
@@ -127,84 +127,97 @@ exports.getStudents = async ({ page = 1, pageSize = 10, name, curp }) => {
 };
 
 function toCSV(rows) {
-       const header = ['id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt', 'total_respuestas', 'carrera_recomendada'];
-       const lines = [header.join(',')];
-       for (const r of rows) {
-	       const u = r.usuario; const s = r.resumen;
-	       lines.push([
-		       u.id,
-		       u.curp,
-		       JSON.stringify(u.nombre),
-		       JSON.stringify(u.apellidos),
-		       JSON.stringify(u.email),
-		       JSON.stringify(u.createdAt),
-		       s.total_respuestas,
-		       r.carrera_recomendada || ''
-	       ].join(','));
-       }
-       return lines.join('\n');
+    const header = [
+        'id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt',
+        'genero', 'escuela_procedencia', // nuevos campos
+        'total_respuestas', 'carrera_recomendada'
+    ];
+    const lines = [header.join(',')];
+    for (const r of rows) {
+        const u = r.usuario; const s = r.resumen;
+        lines.push([
+            u.id,
+            u.curp,
+            JSON.stringify(u.nombre),
+            JSON.stringify(u.apellidos),
+            JSON.stringify(u.email),
+            JSON.stringify(u.createdAt),
+            JSON.stringify(u.genero),
+            JSON.stringify(u.escuela_procedencia),
+            s.total_respuestas,
+            r.carrera_recomendada || ''
+        ].join(','));
+    }
+    return lines.join('\n');
 }
 
 exports.exportReport = async ({ format = 'csv', name, curp }) => {
-	// Reutilizamos dashboard sin paginación (traer todo); en proyectos grandes usar streaming
-	const where = { role: 'aspirante' };
-	if (curp) where.curp = curp;
-	if (name) {
-		where[sequelize.Op.or] = [
-			{ nombre: { [sequelize.Op.like]: `%${name}%` } },
-			{ apellidos: { [sequelize.Op.like]: `%${name}%` } }
-		];
-	}
-	const users = await sequelize.models.usuarios.findAll({ where, attributes: ['id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt'] });
-	const userIds = users.map(u => u.id);
-	const resultados = await sequelize.models.resultados.findAll({
-		where: { id_usuario: userIds },
-		include: [{ model: sequelize.models.pregunta, as: 'id_pregunta_preguntum', attributes: ['tipo'] }]
-	});
-       const byUser = new Map(users.map(u => [u.id, { usuario: u.toJSON(), resumen: { total_respuestas: 0 }, carrera_recomendada: null }]));
-       for (const r of resultados) {
-	       const bucket = byUser.get(r.id_usuario);
-	       if (!bucket) continue;
-	       bucket.resumen.total_respuestas += 1;
-       }
-       // Recomendar carrera igual que en dashboard
-       const topCarreraRows = await sequelize.query(`
-	       SELECT t.id_usuario, t.materia, t.interes_si FROM (
-		       SELECT 
-			       u.id as id_usuario,
-			       m.nombre AS materia,
-			       COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) AS interes_si,
-			       ROW_NUMBER() OVER (PARTITION BY u.id ORDER BY COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) DESC) as rn
-		       FROM usuarios u
-		       LEFT JOIN resultados r ON r.id_usuario = u.id
-		       LEFT JOIN pregunta p ON r.id_pregunta = p.id_pregunta
-		       LEFT JOIN materia m ON p.id_materia = m.id
-		       WHERE u.id IN (:userIds)
-		       GROUP BY u.id, m.nombre
-	       ) t WHERE t.rn = 1 AND t.interes_si > 0
-       `, {
-	       replacements: { userIds },
-	       type: sequelize.QueryTypes.SELECT
-       });
-       const carreraPorUsuario = {};
-       for (const row of topCarreraRows) {
-	       if (row.id_usuario && row.materia) {
-		       carreraPorUsuario[row.id_usuario] = row.materia;
-	       }
-       }
-       for (const [id, bucket] of byUser.entries()) {
-	       if (carreraPorUsuario[id]) {
-		       bucket.carrera_recomendada = carreraPorUsuario[id];
-	       }
-       }
-       const items = Array.from(byUser.values());
-       if (format === 'csv') {
-	       return { type: 'csv', data: toCSV(items) };
-       } else if (format === 'pdf') {
-	       // PDF se genera en controller usando pdfkit con estos items
-	       return { type: 'pdf', data: items };
-       }
-       throw { status: 400, message: 'format debe ser csv o pdf' };
+    // Reutilizamos dashboard sin paginación (traer todo); en proyectos grandes usar streaming
+    const where = { role: 'aspirante' };
+    if (curp) where.curp = curp;
+    if (name) {
+        where[sequelize.Op.or] = [
+            { nombre: { [sequelize.Op.like]: `%${name}%` } },
+            { apellidos: { [sequelize.Op.like]: `%${name}%` } }
+        ];
+    }
+    // Incluye genero y escuela_procedencia en los atributos
+    const users = await sequelize.models.usuarios.findAll({
+        where,
+        attributes: [
+            'id', 'curp', 'nombre', 'apellidos', 'email', 'createdAt',
+            'genero', 'escuela_procedencia'
+        ]
+    });
+    const userIds = users.map(u => u.id);
+    const resultados = await sequelize.models.resultados.findAll({
+        where: { id_usuario: userIds },
+        include: [{ model: sequelize.models.pregunta, as: 'id_pregunta_preguntum', attributes: ['tipo'] }]
+    });
+    const byUser = new Map(users.map(u => [u.id, { usuario: u.toJSON(), resumen: { total_respuestas: 0 }, carrera_recomendada: null }]));
+    for (const r of resultados) {
+        const bucket = byUser.get(r.id_usuario);
+        if (!bucket) continue;
+        bucket.resumen.total_respuestas += 1;
+    }
+    // Recomendar carrera igual que en dashboard
+    const topCarreraRows = await sequelize.query(`
+        SELECT t.id_usuario, t.materia, t.interes_si FROM (
+            SELECT 
+                u.id as id_usuario,
+                m.nombre AS materia,
+                COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) AS interes_si,
+                ROW_NUMBER() OVER (PARTITION BY u.id ORDER BY COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' AND p.tipo = 1 THEN 1 END) DESC) as rn
+            FROM usuarios u
+            LEFT JOIN resultados r ON r.id_usuario = u.id
+            LEFT JOIN pregunta p ON r.id_pregunta = p.id_pregunta
+            LEFT JOIN materia m ON p.id_materia = m.id
+            WHERE u.id IN (:userIds)
+            GROUP BY u.id, m.nombre
+        ) t WHERE t.rn = 1 AND t.interes_si > 0
+    `, {
+        replacements: { userIds },
+        type: sequelize.QueryTypes.SELECT
+    });
+    const carreraPorUsuario = {};
+    for (const row of topCarreraRows) {
+        if (row.id_usuario && row.materia) {
+            carreraPorUsuario[row.id_usuario] = row.materia;
+        }
+    }
+    for (const [id, bucket] of byUser.entries()) {
+        if (carreraPorUsuario[id]) {
+            bucket.carrera_recomendada = carreraPorUsuario[id];
+        }
+    }
+    const items = Array.from(byUser.values());
+    if (format === 'csv') {
+        return { type: 'csv', data: toCSV(items) };
+    } else if (format === 'pdf') {
+        // PDF se genera en controller usando pdfkit con estos items
+        return { type: 'pdf', data: items };
+    }
+    throw { status: 400, message: 'format debe ser csv o pdf' };
 };
 
 // Users CRUD (admin)
