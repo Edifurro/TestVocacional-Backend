@@ -10,7 +10,8 @@ const { Op } = require('sequelize');
 exports.sendResetCode = async (email) => {
     try {
         const user = await usuarios.findOne({ where: { email } });
-        if (!user) return;
+        if (!user) 
+            throw { status: 404, message: 'No se encontró un usuario con ese email.' };
 
         // Busca el último registro para ese email
         const lastReset = await password_resets.findOne({

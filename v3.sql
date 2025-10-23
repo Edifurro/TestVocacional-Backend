@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-10-2025 a las 03:46:40
+-- Tiempo de generación: 01-10-2025 a las 23:42:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -127,7 +127,7 @@ INSERT INTO `pregunta` (`id_pregunta`, `pregunta`, `id_materia`, `tipo`) VALUES
 (34, '¿Tolerarías empezar tantas veces como fuera necesario hasta obtener el logro deseado?', 3, b'01'),
 (35, '¿Cuando estás en un grupo de trabajo, te agrada producir ideas originales y que sean tenidas en cuenta?', 3, b'01'),
 (36, '¿Desearías que te regalaran algún instrumento musical para tu cumpleaños?', 3, b'01'),
-(37, '¿Harías el moral para una campaña de prevención del SIDA?', 3, b'01'),
+(37, '¿Harías el mural para una campaña de prevención del SIDA?', 3, b'01'),
 (38, '¿Cuando eliges tu ropa o decoras un ambiente, tienes en cuenta la combinación de los colores, las telas o el estilo de los muebles?', 3, b'01'),
 (39, '¿Crees que los detalles son tan importantes como el todo?', 3, b'00'),
 (40, '¿Te gusta más el trabajo manual que el trabajo intelectual?', 3, b'00'),
@@ -401,7 +401,104 @@ INSERT INTO `resultados` (`id_resultado`, `id_pregunta`, `id_usuario`, `metaData
 (859, 95, 9, '{\"respuesta\":false}'),
 (860, 96, 9, '{\"respuesta\":true}'),
 (861, 97, 9, '{\"respuesta\":false}'),
-(862, 98, 9, '{\"respuesta\":true}');
+(862, 98, 9, '{\"respuesta\":true}'),
+(863, 2, 16, '{\"respuesta\":true}'),
+(864, 3, 16, '{\"respuesta\":false}'),
+(865, 4, 16, '{\"respuesta\":true}'),
+(866, 5, 16, '{\"respuesta\":false}'),
+(867, 6, 16, '{\"respuesta\":false}'),
+(868, 7, 16, '{\"respuesta\":false}'),
+(869, 8, 16, '{\"respuesta\":false}'),
+(870, 9, 16, '{\"respuesta\":false}'),
+(871, 10, 16, '{\"respuesta\":false}'),
+(872, 11, 16, '{\"respuesta\":true}'),
+(873, 12, 16, '{\"respuesta\":true}'),
+(874, 13, 16, '{\"respuesta\":true}'),
+(875, 14, 16, '{\"respuesta\":true}'),
+(876, 15, 16, '{\"respuesta\":false}'),
+(877, 16, 16, '{\"respuesta\":true}'),
+(878, 17, 16, '{\"respuesta\":true}'),
+(879, 18, 16, '{\"respuesta\":true}'),
+(880, 19, 16, '{\"respuesta\":true}'),
+(881, 20, 16, '{\"respuesta\":false}'),
+(882, 21, 16, '{\"respuesta\":true}'),
+(883, 22, 16, '{\"respuesta\":false}'),
+(884, 23, 16, '{\"respuesta\":false}'),
+(885, 24, 16, '{\"respuesta\":false}'),
+(886, 25, 16, '{\"respuesta\":true}'),
+(887, 26, 16, '{\"respuesta\":false}'),
+(888, 27, 16, '{\"respuesta\":false}'),
+(889, 28, 16, '{\"respuesta\":true}'),
+(890, 29, 16, '{\"respuesta\":false}'),
+(891, 30, 16, '{\"respuesta\":true}'),
+(892, 31, 16, '{\"respuesta\":true}'),
+(893, 32, 16, '{\"respuesta\":false}'),
+(894, 33, 16, '{\"respuesta\":true}'),
+(895, 34, 16, '{\"respuesta\":false}'),
+(896, 35, 16, '{\"respuesta\":false}'),
+(897, 36, 16, '{\"respuesta\":true}'),
+(898, 37, 16, '{\"respuesta\":true}'),
+(899, 38, 16, '{\"respuesta\":false}'),
+(900, 39, 16, '{\"respuesta\":true}'),
+(901, 40, 16, '{\"respuesta\":false}'),
+(902, 41, 16, '{\"respuesta\":true}'),
+(903, 42, 16, '{\"respuesta\":false}'),
+(904, 43, 16, '{\"respuesta\":false}'),
+(905, 44, 16, '{\"respuesta\":true}'),
+(906, 45, 16, '{\"respuesta\":true}'),
+(907, 46, 16, '{\"respuesta\":false}'),
+(908, 47, 16, '{\"respuesta\":false}'),
+(909, 48, 16, '{\"respuesta\":false}'),
+(910, 49, 16, '{\"respuesta\":true}'),
+(911, 50, 16, '{\"respuesta\":false}'),
+(912, 51, 16, '{\"respuesta\":true}'),
+(913, 52, 16, '{\"respuesta\":false}'),
+(914, 53, 16, '{\"respuesta\":false}'),
+(915, 54, 16, '{\"respuesta\":false}'),
+(916, 55, 16, '{\"respuesta\":true}'),
+(917, 56, 16, '{\"respuesta\":true}'),
+(918, 57, 16, '{\"respuesta\":true}'),
+(919, 58, 16, '{\"respuesta\":false}'),
+(920, 59, 16, '{\"respuesta\":false}'),
+(921, 60, 16, '{\"respuesta\":true}'),
+(922, 61, 16, '{\"respuesta\":false}'),
+(923, 62, 16, '{\"respuesta\":false}'),
+(924, 63, 16, '{\"respuesta\":true}'),
+(925, 64, 16, '{\"respuesta\":false}'),
+(926, 65, 16, '{\"respuesta\":false}'),
+(927, 66, 16, '{\"respuesta\":true}'),
+(928, 67, 16, '{\"respuesta\":true}'),
+(929, 68, 16, '{\"respuesta\":true}'),
+(930, 69, 16, '{\"respuesta\":true}'),
+(931, 70, 16, '{\"respuesta\":false}'),
+(932, 71, 16, '{\"respuesta\":false}'),
+(933, 72, 16, '{\"respuesta\":true}'),
+(934, 73, 16, '{\"respuesta\":true}'),
+(935, 74, 16, '{\"respuesta\":false}'),
+(936, 75, 16, '{\"respuesta\":false}'),
+(937, 76, 16, '{\"respuesta\":true}'),
+(938, 77, 16, '{\"respuesta\":true}'),
+(939, 78, 16, '{\"respuesta\":true}'),
+(940, 79, 16, '{\"respuesta\":true}'),
+(941, 80, 16, '{\"respuesta\":true}'),
+(942, 81, 16, '{\"respuesta\":true}'),
+(943, 82, 16, '{\"respuesta\":true}'),
+(944, 83, 16, '{\"respuesta\":true}'),
+(945, 84, 16, '{\"respuesta\":true}'),
+(946, 85, 16, '{\"respuesta\":false}'),
+(947, 86, 16, '{\"respuesta\":true}'),
+(948, 87, 16, '{\"respuesta\":true}'),
+(949, 88, 16, '{\"respuesta\":true}'),
+(950, 89, 16, '{\"respuesta\":true}'),
+(951, 90, 16, '{\"respuesta\":false}'),
+(952, 91, 16, '{\"respuesta\":true}'),
+(953, 92, 16, '{\"respuesta\":false}'),
+(954, 93, 16, '{\"respuesta\":false}'),
+(955, 94, 16, '{\"respuesta\":false}'),
+(956, 95, 16, '{\"respuesta\":true}'),
+(957, 96, 16, '{\"respuesta\":false}'),
+(958, 97, 16, '{\"respuesta\":false}'),
+(959, 98, 16, '{\"respuesta\":false}');
 
 -- --------------------------------------------------------
 
@@ -420,7 +517,7 @@ CREATE TABLE `usuarios` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` int(11) NOT NULL,
   `escuela_procedencia` varchar(200) DEFAULT NULL,
-  `genero` enum('hombre','mujer') DEFAULT NULL
+  `genero` enum('hombre','mujer','otro') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -430,10 +527,11 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `curp`, `nombre`, `apellidos`, `email`, `password`, `role`, `createdAt`, `updatedAt`, `escuela_procedencia`, `genero`) VALUES
 (3, 'MEIA030529HQRNTNA6', 'Angel', 'Mendez', 'usuario@example.com', '$2b$10$.NxbvUzkFttiRhzMPdtUf.kTLUCc9yhVx4bqZzLQtPFKNg9FslHhe', 'aspirante', '2025-09-19 20:45:17', 0, NULL, 'mujer'),
 (6, 'ROLE020901HCSBPDA9', 'Edigatason', 'Robles', 'edifurro@gmail.com', '$2b$10$5CmTHtg4rsMQ3l4rCpbcBuN5va8wjCZhfjCItF4oPft.0rOFk0kpy', 'admin', '2025-09-19 20:45:17', 2025, NULL, NULL),
-(7, 'MEIA991204HQRNTR03', 'Aaron', 'Mendez', 'Example@outlook.com', '$2b$10$kShaXms4Y3Buo9uSkT8dOucVTCmGeUUfysipH.3Nqgcmwub.whUyC', 'aspirante', '2025-09-19 20:45:17', 0, NULL, NULL),
+(7, 'MEIA991204HQRNTR03', 'Aaron2', 'Mendez', 'Example@outlook.com', '$2b$10$kShaXms4Y3Buo9uSkT8dOucVTCmGeUUfysipH.3Nqgcmwub.whUyC', 'aspirante', '2025-09-19 20:45:17', 2025, NULL, NULL),
 (8, 'ROLE020901HCSBPDE1', 'EDISON', 'ROBLES', 'EDI@GMAIL.COM', '$2b$10$nCJhYssNObNfNUbHi1KVwu/TnbgKmMb4AjOwmZGr7enT3MvIf4R.6', 'aspirante', '2025-09-19 02:02:46', 2025, NULL, NULL),
-(9, 'COML990516MQRLRR06', 'Loren de los Angeles', 'Colli Martinez', 'Lorenciana16@gmail.com', '$2b$10$mjv.gpyMMg.bXG7QVchjr.Il4Io84oSGrzeypP/Ngw5q44P.m7FJe', 'aspirante', '2025-09-25 16:24:02', 2025, NULL, NULL),
-(13, 'ABCD990101HDFLRS03', 'Juan', 'Pérez', 'ejemplo3@correo.com', '$2b$10$EPCtv.i2UkebqNYIZtIH9.DFuG1JTpOhBCzWudOueozp1OCT9uX52', 'aspirante', '2025-10-01 01:23:19', 2025, 'CBTIS 111', 'hombre');
+(9, 'COML990516MQRLRR06', 'Loren de los Angeles', 'Colli Martinez', 'Lorenciana16@gmail.com', '$2b$10$BEq/VKTesZ2.0EMdlsO75uDRsMqTsnZ7a0MDAlGwLG58q/.uhY0YG', 'aspirante', '2025-09-25 16:24:02', 2025, NULL, NULL),
+(13, 'ABCD990101HDFLRS03', 'Juan', 'Pérez', 'ejemplo3@correo.com', '$2b$10$EPCtv.i2UkebqNYIZtIH9.DFuG1JTpOhBCzWudOueozp1OCT9uX52', 'aspirante', '2025-10-01 01:23:19', 2025, 'CBTIS 111', 'hombre'),
+(16, 'RACS870315HMCSPNR9', 'Raul ', 'Sanchez ', '202200510@upqroo.edu.mx', '$2b$10$9K1CWhanLnrEEZIZqod19.FTGA51IMe3983i20slakmvWCK6lkHQi', 'aspirante', '2025-10-01 17:17:57', 2025, 'Instituto Livier', 'hombre');
 
 --
 -- Índices para tablas volcadas
@@ -500,13 +598,13 @@ ALTER TABLE `pregunta`
 -- AUTO_INCREMENT de la tabla `resultados`
 --
 ALTER TABLE `resultados`
-  MODIFY `id_resultado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=863;
+  MODIFY `id_resultado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=960;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas

@@ -38,7 +38,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     genero: {
-      type: DataTypes.ENUM('hombre','mujer'),
+      type: DataTypes.ENUM('hombre','mujer','otro'),
       allowNull: true
     }
   }, {
