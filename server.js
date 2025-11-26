@@ -1,6 +1,6 @@
-const app = require('./app');
-const sequelize = require('./config/db');
-const  initModels  = require('./models/init-models');
+const app = require('./src/app');
+const sequelize = require('./src/config/db');
+const  initModels  = require('./src/models/init-models');
 
 
 // Importar modelos para registrar relaciones
