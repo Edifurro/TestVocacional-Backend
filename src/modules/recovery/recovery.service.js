@@ -46,20 +46,30 @@ exports.sendResetCode = async (email) => {
             cooldown // guarda el cooldown usado para el próximo intento
         });
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'testvocacionalup@gmail.com',
-                pass: 'vceh jwzz ncbu yekk'
-            }
-        });
+      const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    type: "OAuth2",
+    user: process.env.GMAIL_USER,
+    clientId: process.env.GMAIL_CLIENT_ID,
+    clientSecret: process.env.GMAIL_CLIENT_SECRET,
+    refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+  },
+});
 
-        await transporter.sendMail({
-            from: '"Test Vocacional" <testvocacionalup@gmail.com>',
-            to: email,
-            subject: 'Código de recuperación',
-            text: `Tu código de recuperación es: ${code}`
-        });
+      await transporter.sendMail({
+  from: `"Test Vocacional UPQROO (No-Reply)" <${process.env.GMAIL_USER}>`,
+  to: email,
+  subject: 'Código de recuperación',
+  text: `Tu código de recuperación es: ${code}`,
+  
+
+  // 👇 evita que los usuarios respondan
+  replyTo: 'no-reply@testvocacional.upqroo.edu.mx', // visible pero no responde a tu cuenta
+  headers: {
+    'X-No-Reply': 'true',
+  },
+});
     } catch (err) {
         console.error('Error en sendResetCode:', err);
         throw err;

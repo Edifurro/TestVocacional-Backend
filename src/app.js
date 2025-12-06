@@ -15,7 +15,7 @@ const recoveryRoutes = require('./modules/recovery/recovery.routes');
 const app = express();
 
 
-app.use(cors());
+app.use(cors());  
 app.use(express.json());
 app.use(helmet());
 
