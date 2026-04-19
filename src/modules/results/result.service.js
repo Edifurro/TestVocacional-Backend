@@ -85,22 +85,48 @@ exports.reportePorCurp = async (curp) => {
     // Si tiene respuestas, ejecutar la consulta que incluye todas las materias
     const rows = await sequelize.query(`
         SELECT 
-            m.nombre AS materia,
-            p.tipo,
-            COALESCE(COUNT(CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' THEN 1 END), 0) AS total_respuestas_usuario,
-            (
-                SELECT COUNT(*)
-                FROM pregunta p2
-                WHERE p2.id_materia = m.id
-                  AND p2.tipo = p.tipo
-            ) AS total_preguntas_materia_tipo
-        FROM materia m
-        CROSS JOIN (SELECT DISTINCT tipo FROM pregunta) pt
-        LEFT JOIN pregunta p ON m.id = p.id_materia AND p.tipo = pt.tipo
-        LEFT JOIN resultados r ON r.id_pregunta = p.id_pregunta AND r.id_usuario = :id_usuario
-        WHERE EXISTS (SELECT 1 FROM pregunta p3 WHERE p3.id_materia = m.id AND p3.tipo = pt.tipo)
-        GROUP BY m.nombre, pt.tipo
-        ORDER BY m.nombre DESC, pt.tipo;	
+    m.nombre AS materia,
+    pt.tipo,
+
+    COALESCE(
+        COUNT(CASE 
+            WHEN JSON_UNQUOTE(JSON_EXTRACT(r.metaData, '$.respuesta')) = 'true' 
+            THEN 1 
+        END),
+    0) AS total_respuestas_usuario,
+
+    (
+        SELECT COUNT(*)
+        FROM pregunta p2
+        WHERE p2.id_materia = m.id
+          AND p2.tipo = pt.tipo
+    ) AS total_preguntas_materia_tipo
+
+FROM materia m
+
+CROSS JOIN (
+    SELECT DISTINCT tipo 
+    FROM pregunta
+) pt
+
+LEFT JOIN pregunta p 
+    ON m.id = p.id_materia 
+   AND p.tipo = pt.tipo
+
+LEFT JOIN resultados r 
+    ON r.id_pregunta = p.id_pregunta 
+   AND r.id_usuario = :id_usuario
+
+WHERE EXISTS (
+    SELECT 1 
+    FROM pregunta p3 
+    WHERE p3.id_materia = m.id 
+      AND p3.tipo = pt.tipo
+)
+
+GROUP BY m.nombre, pt.tipo
+
+ORDER BY m.nombre DESC, pt.tipo;	
     `, { 
         replacements: { id_usuario: usuario.id }, 
         type: sequelize.QueryTypes.SELECT 
